@@ -1,0 +1,62 @@
+name: Publish Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+        contents: write
+        id-token: write
+
+    if: "${{ !contains(github.event.head_commit.message, 'ci: publish version') }}"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Set Git user
+        run: |
+          git config user.name "onpush-publish-action"
+          # https://api.github.com/users/github-actions%5Bbot%5D
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version
+        run: npm version patch --no-git-tag-version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Commit version bump
+        run: |
+            git add package.json package-lock.json
+            git commit -m "ci: publish version $(npm pkg get version | tr -d '\n')"
+            git push
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and push tag
+        run: |
+            version=$(jq --raw-output '."version"' <package.json)
+            git tag "v$version"
+            git push origin "v$version"
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to NPM
+        run: npm publish

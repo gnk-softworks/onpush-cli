@@ -1,0 +1,46 @@
+version: 1
+mode: current
+project:
+  name: onpush-cli
+output:
+  directory: docs/
+  filename_template: "{slug}.md"
+  toc: true
+generation:
+  provider: anthropic
+  model: claude-sonnet-4-6
+  cost_limit: null
+  timeout: 3600
+  parallel: 2
+types:
+  product-overview:
+    enabled: true
+  architecture:
+    enabled: true
+  api-reference:
+    enabled: true
+  business-overview:
+    enabled: true
+  security:
+    enabled: true
+  testing:
+    enabled: true
+  data-model:
+    enabled: false
+  deployment:
+    enabled: false
+  known-issues:
+    enabled: false
+custom_types: []
+exclude:
+  - node_modules/**
+  - dist/**
+  - build/**
+  - .git/**
+  - "**/*.lock"
+  - "**/*.min.js"
+  - .env*
+  - "**/credentials*"
+  - "**/secrets*"
+  - "**/*.pem"
+  - "**/*.key"

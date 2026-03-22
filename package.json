@@ -1,0 +1,60 @@
+{
+  "name": "onpush",
+  "version": "0.1.0",
+  "description": "AI-powered documentation generator for software projects",
+  "license": "Elastic-2.0",
+  "type": "module",
+  "bin": {
+    "onpush": "./dist/bin/onpush.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gnk-softworks/onpush-cli.git"
+  },
+  "scripts": {
+    "build": "tsc && chmod +x dist/bin/onpush.js",
+    "dev": "tsx src/bin/onpush.ts",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage --reporter=json --outputFile=./test-output.json",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build",
+    "lint": "tsc --noEmit && eslint src/",
+    "postinstall": "node scripts/postinstall.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "documentation",
+    "ai",
+    "claude",
+    "copilot",
+    "cli",
+    "markdown",
+    "codegen",
+    "docgen"
+  ],
+  "optionalDependencies": {
+    "@github/copilot-sdk": "^0.1.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.2.81",
+    "@clack/prompts": "^0.9.1",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "minimatch": "^10.0.1",
+    "simple-git": "^3.27.0",
+    "yaml": "^2.7.1",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.15.3",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^10.1.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.57.2",
+    "vitest": "^3.1.2"
+  }
+}
