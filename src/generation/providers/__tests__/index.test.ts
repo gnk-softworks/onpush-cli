@@ -3,17 +3,17 @@ import { createProvider } from "../index.js";
 
 // Mock both provider modules
 vi.mock("../anthropic.js", () => ({
-  AnthropicProvider: vi.fn().mockImplementation(() => ({
-    name: "anthropic",
-    runDocAgent: vi.fn(),
-  })),
+  AnthropicProvider: class {
+    name = "anthropic";
+    runDocAgent = vi.fn();
+  },
 }));
 
 vi.mock("../copilot.js", () => ({
-  CopilotProvider: vi.fn().mockImplementation(() => ({
-    name: "copilot",
-    runDocAgent: vi.fn(),
-  })),
+  CopilotProvider: class {
+    name = "copilot";
+    runDocAgent = vi.fn();
+  },
 }));
 
 describe("createProvider", () => {
