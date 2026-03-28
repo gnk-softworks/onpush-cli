@@ -252,26 +252,9 @@ exclude:
 
 ### GitHub Actions
 
-```yaml
-name: Generate Documentation
-on:
-  push:
-    branches: [main]
+An example workflow is included at [`.github/workflows/generate-docs.yml`](.github/workflows/generate-docs.yml). It installs Node, Claude Code, and OnPush, then runs `onpush generate --ci`.
 
-jobs:
-  docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: onpush generate --verbose
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-```
+To use it in your own repository, copy the workflow file and add `ANTHROPIC_API_KEY` to your repository secrets.
 
 CI mode is auto-detected via `CI=true` or `--ci` flag. Output switches to JSON with plain text progress.
 
