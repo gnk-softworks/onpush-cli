@@ -27,7 +27,7 @@ jobs:
 
       - name: Set Git user
         run: |
-          git config user.name "narvik-publish-action"
+          git config user.name "onpush-publish-action"
           # https://api.github.com/users/github-actions%5Bbot%5D
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
@@ -44,7 +44,7 @@ jobs:
 
       - name: Commit version bump
         run: |
-            git add package.json package-lock.json jsr.json
+            git add package.json package-lock.json
             git commit -m "ci: publish version $(npm pkg get version | tr -d '\n')"
             git push
         env:
