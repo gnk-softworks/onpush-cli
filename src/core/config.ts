@@ -29,7 +29,7 @@ const ByokSchema = z.object({
 });
 
 const GenerationSchema = z.object({
-  provider: z.enum(["anthropic", "copilot"]).default("anthropic"),
+  provider: z.enum(["anthropic", "copilot", "opencode"]).default("anthropic"),
   model: z.string().default("claude-sonnet-4-6"),
   copilot_byok: ByokSchema.optional(),
   cost_limit: z.number().positive().nullable().default(null),

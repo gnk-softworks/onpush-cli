@@ -27,6 +27,25 @@ export async function createProvider(
         throw err;
       }
     }
+    case "opencode": {
+      try {
+        const { OpencodeProvider } = await import("./opencode.js");
+        return new OpencodeProvider();
+      } catch (err: unknown) {
+        if (
+          err instanceof Error &&
+          "code" in err &&
+          (err as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND"
+        ) {
+          throw new Error(
+            "@opencode-ai/sdk is required to use the opencode provider.\n" +
+              "Install it with: npm install @opencode-ai/sdk",
+            { cause: err }
+          );
+        }
+        throw err;
+      }
+    }
     default:
       throw new Error(`Unknown provider: ${name}`);
   }
