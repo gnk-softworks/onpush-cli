@@ -5,7 +5,6 @@ import { stringify as yamlStringify } from "yaml";
 import { runInitWizard, type InitWizardResult, type ExistingConfig } from "../ui/prompts.js";
 import { CancelError } from "../../core/errors.js";
 import { DEFAULT_DOCUMENT_TYPES } from "../../core/document-types.js";
-import { DEFAULT_MODELS } from "../../generation/providers/types.js";
 import { loadConfig } from "../../core/config.js";
 
 export function registerInitCommand(program: Command): void {
@@ -37,6 +36,7 @@ export function registerInitCommand(program: Command): void {
 
         existing = {
           provider: config.generation.provider,
+          model: config.generation.model,
           mode: config.mode,
           projectName: config.project.name,
           projectDescription: config.project.description,
@@ -91,7 +91,7 @@ async function writeConfig(result: InitWizardResult): Promise<void> {
     },
     generation: {
       provider: result.provider,
-      model: DEFAULT_MODELS[result.provider],
+      model: result.model,
       cost_limit: null,
       timeout: result.timeout,
       parallel: result.parallel,
