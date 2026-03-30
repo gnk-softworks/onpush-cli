@@ -5,6 +5,7 @@ import { CancelError } from "../../core/errors.js";
 
 export interface InitWizardResult {
   provider: "anthropic" | "copilot";
+  model: string;
   mode: "current" | "remote";
   projectName: string;
   projectDescription?: string;
@@ -48,6 +49,7 @@ const SECURITY_EXCLUDES = [
  */
 export interface ExistingConfig {
   provider?: "anthropic" | "copilot";
+  model?: string;
   mode?: "current" | "remote";
   projectName?: string;
   projectDescription?: string;
@@ -80,6 +82,48 @@ export async function runInitWizard(existing?: ExistingConfig): Promise<InitWiza
   if (p.isCancel(provider)) {
     p.cancel("Setup cancelled.");
     throw new CancelError();
+  }
+
+  // Model selection — options depend on provider
+  const CUSTOM_MODEL_VALUE = "__custom__";
+  const modelOptions =
+    provider === "anthropic"
+      ? [
+          { value: "claude-opus-4-6", label: "Opus 4.6 (Default)" },
+          { value: "claude-sonnet-4-6", label: "Sonnet 4.6" },
+          { value: CUSTOM_MODEL_VALUE, label: "Custom model…" },
+        ]
+      : [
+          { value: "claude-opus-4-6", label: "Opus 4.6 (Default)" },
+          { value: "gpt-5.3-codex", label: "GPT-5.3-Codex" },
+          { value: CUSTOM_MODEL_VALUE, label: "Custom model…" },
+        ];
+
+  let model = (await p.select({
+    message: "Model",
+    initialValue: existing?.model ?? "claude-opus-4-6",
+    options: modelOptions,
+  })) as string;
+
+  if (p.isCancel(model)) {
+    p.cancel("Setup cancelled.");
+    throw new CancelError();
+  }
+
+  if (model === CUSTOM_MODEL_VALUE) {
+    const customModel = (await p.text({
+      message: "Enter model name",
+      validate: (value) => {
+        if (!value?.trim()) return "Model name is required";
+      },
+    })) as string;
+
+    if (p.isCancel(customModel)) {
+      p.cancel("Setup cancelled.");
+      throw new CancelError();
+    }
+
+    model = customModel;
   }
 
   const mode = (await p.select({
@@ -260,6 +304,7 @@ export async function runInitWizard(existing?: ExistingConfig): Promise<InitWiza
 
   return {
     provider,
+    model,
     mode,
     projectName,
     projectDescription: projectDescription || undefined,

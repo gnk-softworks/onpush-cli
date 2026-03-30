@@ -86,6 +86,8 @@ Options:
 
 Interactive setup wizard. Creates `.onpush/config.yml`.
 
+- Select AI provider: **Anthropic** or **GitHub Copilot**
+- Select AI model (provider-specific presets or custom model name)
 - Select mode: **Current Repo** or **Remote Repo(s)**
 - Configure project name, output directory, document types
 - Create custom document types with guided prompts
@@ -215,7 +217,7 @@ output:
 
 generation:
   provider: "anthropic"  # or "copilot"
-  model: "claude-sonnet-4-6"
+  model: "claude-opus-4-6"
   cost_limit: null
   timeout: 3600
   parallel: 10
