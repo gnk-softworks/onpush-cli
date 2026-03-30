@@ -32,7 +32,7 @@ export function registerGenerateCommand(program: Command): void {
 .option("--verbose", "Show detailed generation progress")
     .option("--json", "Output structured JSON summary to stdout")
     .option("--cost-limit <usd>", "Abort if actual cost exceeds threshold")
-    .option("--provider <name>", "Override AI provider (anthropic or copilot)")
+    .option("--provider <name>", "Override AI provider (anthropic, copilot, or opencode)")
     .option("--byok-type <type>", "BYOK provider type: openai, azure, or anthropic (Copilot only)")
     .option("--byok-base-url <url>", "BYOK base URL for the LLM API (Copilot only)")
     .option("--byok-api-key <key>", "BYOK API key for the LLM provider (Copilot only)")

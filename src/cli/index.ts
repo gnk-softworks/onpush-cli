@@ -29,7 +29,7 @@ program
   )
   .option(
     "--provider <name>",
-    "AI provider: anthropic or copilot (overrides config)"
+    "AI provider: anthropic, copilot, or opencode (overrides config)"
   )
   .option("--quiet", "Suppress all output except errors")
   .option("--no-color", "Disable colored output")

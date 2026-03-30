@@ -32,7 +32,7 @@ export function createProgressRenderer(options: {
   verbose: boolean;
   provider?: string;
 }): ProgressRenderer {
-  const showCost = options.provider !== "copilot";
+  const showCost = options.provider !== "copilot" && options.provider !== "opencode";
   if (options.quiet) {
     return createQuietRenderer();
   }

@@ -41,6 +41,11 @@ describe("resolveEnvOverrides", () => {
       expect(resolveEnvOverrides().provider).toBe("copilot");
     });
 
+    it('returns "opencode" for ONPUSH_PROVIDER=opencode', () => {
+      process.env.ONPUSH_PROVIDER = "opencode";
+      expect(resolveEnvOverrides().provider).toBe("opencode");
+    });
+
     it("returns undefined for invalid provider", () => {
       process.env.ONPUSH_PROVIDER = "openai";
       expect(resolveEnvOverrides().provider).toBeUndefined();

@@ -5,8 +5,10 @@ export interface AuthResult {
     | "claude_code"
     | "github_token"
     | "github_env"
-    | "github_cli";
-  provider: "anthropic" | "copilot";
+    | "github_cli"
+    | "opencode_api_key"
+    | "opencode_managed";
+  provider: "anthropic" | "copilot" | "opencode";
   apiKey?: string;
   githubToken?: string;
 }
@@ -69,16 +71,42 @@ export function resolveCopilotAuth(options: {
 }
 
 /**
+ * Resolves authentication for OpenCode using the 2-step chain:
+ * 1. ANTHROPIC_API_KEY or other provider API key (passed to OpenCode)
+ * 2. OpenCode managed auth (user configured auth in OpenCode directly)
+ */
+export function resolveOpencodeAuth(options: {
+  apiKeyFlag?: string;
+}): AuthResult {
+  // 1. Explicit flag
+  if (options.apiKeyFlag) {
+    return { type: "opencode_api_key", provider: "opencode", apiKey: options.apiKeyFlag };
+  }
+
+  // 2. Environment variable
+  const envKey = process.env.ANTHROPIC_API_KEY;
+  if (envKey) {
+    return { type: "opencode_api_key", provider: "opencode", apiKey: envKey };
+  }
+
+  // 3. OpenCode manages its own auth
+  return { type: "opencode_managed", provider: "opencode" };
+}
+
+/**
  * Resolves authentication for the given provider.
  */
 export function resolveAuthForProvider(
-  provider: "anthropic" | "copilot",
+  provider: "anthropic" | "copilot" | "opencode",
   options: { apiKeyFlag?: string; githubTokenFlag?: string }
 ): AuthResult {
   if (provider === "copilot") {
     return resolveCopilotAuth({
       githubTokenFlag: options.githubTokenFlag,
     });
+  }
+  if (provider === "opencode") {
+    return resolveOpencodeAuth({ apiKeyFlag: options.apiKeyFlag });
   }
   return resolveAuth({ apiKeyFlag: options.apiKeyFlag });
 }

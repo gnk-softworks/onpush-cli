@@ -4,7 +4,7 @@ import { DEFAULT_DOCUMENT_TYPES } from "../../core/document-types.js";
 import { CancelError } from "../../core/errors.js";
 
 export interface InitWizardResult {
-  provider: "anthropic" | "copilot";
+  provider: "anthropic" | "copilot" | "opencode";
   model: string;
   mode: "current" | "remote";
   projectName: string;
@@ -48,7 +48,7 @@ const SECURITY_EXCLUDES = [
  * Runs the interactive init wizard using @clack/prompts.
  */
 export interface ExistingConfig {
-  provider?: "anthropic" | "copilot";
+  provider?: "anthropic" | "copilot" | "opencode";
   model?: string;
   mode?: "current" | "remote";
   projectName?: string;
@@ -76,8 +76,12 @@ export async function runInitWizard(existing?: ExistingConfig): Promise<InitWiza
         value: "copilot",
         label: "GitHub Copilot — Uses GitHub authentication / Copilot SDK",
       },
+      {
+        value: "opencode",
+        label: "OpenCode — Multi-provider AI with local server (supports 75+ LLMs)",
+      },
     ],
-  })) as "anthropic" | "copilot";
+  })) as "anthropic" | "copilot" | "opencode";
 
   if (p.isCancel(provider)) {
     p.cancel("Setup cancelled.");
@@ -93,15 +97,25 @@ export async function runInitWizard(existing?: ExistingConfig): Promise<InitWiza
           { value: "claude-sonnet-4-6", label: "Sonnet 4.6" },
           { value: CUSTOM_MODEL_VALUE, label: "Custom model…" },
         ]
-      : [
+      : provider === "copilot"
+      ? [
           { value: "claude-opus-4-6", label: "Opus 4.6 (Default)" },
           { value: "gpt-5.3-codex", label: "GPT-5.3-Codex" },
           { value: CUSTOM_MODEL_VALUE, label: "Custom model…" },
+        ]
+      : [
+          { value: "openai/gpt-5.3-codex", label: "OpenAI / GPT-5.3-Codex (Default)" },
+          { value: "anthropic/claude-opus-4-6", label: "Anthropic / Opus 4.6" },
+          { value: "anthropic/claude-sonnet-4-6", label: "Anthropic / Sonnet 4.6" },
+          { value: CUSTOM_MODEL_VALUE, label: "Custom model (provider/model)…" },
         ];
+
+  const defaultModel =
+    provider === "opencode" ? "openai/gpt-5.3-codex" : "claude-opus-4-6";
 
   let model = (await p.select({
     message: "Model",
-    initialValue: existing?.model ?? "claude-opus-4-6",
+    initialValue: existing?.model ?? defaultModel,
     options: modelOptions,
   })) as string;
 
