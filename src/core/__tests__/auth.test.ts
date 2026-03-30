@@ -1,6 +1,7 @@
 import {
   resolveAuth,
   resolveCopilotAuth,
+  resolveOpencodeAuth,
   resolveAuthForProvider,
   getAgentEnv,
 } from "../auth.js";
@@ -118,6 +119,46 @@ describe("resolveCopilotAuth", () => {
   });
 });
 
+describe("resolveOpencodeAuth", () => {
+  beforeEach(() => {
+    delete process.env.ANTHROPIC_API_KEY;
+  });
+
+  it("returns opencode_api_key type when flag provided", () => {
+    const result = resolveOpencodeAuth({ apiKeyFlag: "sk-test-123" });
+    expect(result).toEqual({
+      type: "opencode_api_key",
+      provider: "opencode",
+      apiKey: "sk-test-123",
+    });
+  });
+
+  it("returns opencode_api_key from ANTHROPIC_API_KEY env var", () => {
+    process.env.ANTHROPIC_API_KEY = "sk-env-456";
+    const result = resolveOpencodeAuth({});
+    expect(result).toEqual({
+      type: "opencode_api_key",
+      provider: "opencode",
+      apiKey: "sk-env-456",
+    });
+  });
+
+  it("returns opencode_managed when no flag and no env", () => {
+    const result = resolveOpencodeAuth({});
+    expect(result).toEqual({
+      type: "opencode_managed",
+      provider: "opencode",
+    });
+  });
+
+  it("flag takes priority over env var", () => {
+    process.env.ANTHROPIC_API_KEY = "sk-env-456";
+    const result = resolveOpencodeAuth({ apiKeyFlag: "sk-flag-789" });
+    expect(result.type).toBe("opencode_api_key");
+    expect(result.apiKey).toBe("sk-flag-789");
+  });
+});
+
 describe("resolveAuthForProvider", () => {
   beforeEach(() => {
     delete process.env.ANTHROPIC_API_KEY;
@@ -140,6 +181,21 @@ describe("resolveAuthForProvider", () => {
     });
     expect(result.provider).toBe("copilot");
     expect(result.githubToken).toBe("ghp-test");
+  });
+
+  it("dispatches to resolveOpencodeAuth for opencode", () => {
+    const result = resolveAuthForProvider("opencode", {
+      apiKeyFlag: "sk-test",
+    });
+    expect(result.provider).toBe("opencode");
+    expect(result.type).toBe("opencode_api_key");
+    expect(result.apiKey).toBe("sk-test");
+  });
+
+  it("returns opencode_managed when no keys for opencode", () => {
+    const result = resolveAuthForProvider("opencode", {});
+    expect(result.provider).toBe("opencode");
+    expect(result.type).toBe("opencode_managed");
   });
 });
 
@@ -169,6 +225,20 @@ describe("getAgentEnv", () => {
 
   it("returns empty object for github_cli auth", () => {
     const env = getAgentEnv({ type: "github_cli", provider: "copilot" });
+    expect(env).toEqual({});
+  });
+
+  it("returns empty object for opencode_managed auth", () => {
+    const env = getAgentEnv({ type: "opencode_managed", provider: "opencode" });
+    expect(env).toEqual({});
+  });
+
+  it("returns empty object for opencode_api_key auth", () => {
+    const env = getAgentEnv({
+      type: "opencode_api_key",
+      provider: "opencode",
+      apiKey: "sk-123",
+    });
     expect(env).toEqual({});
   });
 });

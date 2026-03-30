@@ -36,7 +36,7 @@ export function createOnPushServer(
         ],
       };
     },
-    { annotations: { readOnly: true } }
+    { annotations: { readOnlyHint: true } }
   );
 
   const saveDocumentTool = tool(

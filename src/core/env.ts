@@ -5,7 +5,7 @@ export interface ByokEnvOverrides {
 }
 
 export interface EnvOverrides {
-  provider?: "anthropic" | "copilot";
+  provider?: "anthropic" | "copilot" | "opencode";
   model?: string;
   byok?: ByokEnvOverrides;
   outputDir?: string;
@@ -28,8 +28,8 @@ export function resolveEnvOverrides(): EnvOverrides {
   }
 
   const providerEnv = process.env.ONPUSH_PROVIDER;
-  let provider: "anthropic" | "copilot" | undefined;
-  if (providerEnv === "anthropic" || providerEnv === "copilot") {
+  let provider: "anthropic" | "copilot" | "opencode" | undefined;
+  if (providerEnv === "anthropic" || providerEnv === "copilot" || providerEnv === "opencode") {
     provider = providerEnv;
   }
 

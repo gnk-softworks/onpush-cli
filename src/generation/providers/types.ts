@@ -1,6 +1,6 @@
 import type { AgentOptions, AgentResult, AgentProgressEvent } from "../agent.js";
 
-export type ProviderName = "anthropic" | "copilot";
+export type ProviderName = "anthropic" | "copilot" | "opencode";
 
 export interface DocAgentProvider {
   readonly name: ProviderName;
@@ -23,4 +23,5 @@ export interface DocAgentProvider {
 export const DEFAULT_MODELS: Record<ProviderName, string> = {
   anthropic: "claude-opus-4-6",
   copilot: "claude-opus-4-6",
+  opencode: "openai/gpt-5.3-codex",
 };
