@@ -91,7 +91,8 @@ Start by listing the repository contents to understand the project structure, th
   }
 
   sections.push(
-    `- Use Mermaid diagrams when they add value for visualizing architecture, data flow, or processes — but do not force diagrams where they don't help`
+    `- Use Mermaid diagrams when they add value for visualizing architecture, data flow, or processes — but do not force diagrams where they don't help
+- When writing Mermaid diagrams, ensure valid syntax: use correct diagram type keywords (graph, flowchart, sequenceDiagram, classDiagram, stateDiagram-v2, erDiagram, gantt, pie, gitGraph), properly close all brackets and quotes, and use valid arrow syntax (-->, --->, -.->). The save_document tool validates Mermaid syntax — if it returns a validation error, fix the Mermaid syntax and call save_document again`
   );
 
   // Per-type instructions
