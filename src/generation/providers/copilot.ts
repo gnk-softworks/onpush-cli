@@ -11,6 +11,7 @@ import type {
   AgentProgressEvent,
 } from "../agent.js";
 import { getAgentEnv } from "../../core/auth.js";
+import { validateDocumentForSave } from "../../validation/mermaid.js";
 
 const DEBUG = process.env.ONPUSH_DEBUG === "1";
 
@@ -68,6 +69,7 @@ export class CopilotProvider implements DocAgentProvider {
     const slug = repos[0]?.name ?? "unknown";
     const startTime = Date.now();
     let savedContent: string | null = null;
+    let saveAttempts = 0;
     let numTurns = 0;
 
     // Define custom tools for the session
@@ -93,7 +95,7 @@ export class CopilotProvider implements DocAgentProvider {
       {
         name: "save_document",
         description:
-          "Save the final generated documentation. You MUST call this tool exactly once with the complete Markdown content when you are done writing the document. Do not return the document as plain text — always use this tool.",
+          "Save the final generated documentation. Call this tool with the complete Markdown content when you are done writing the document. The content will be validated for Mermaid diagram syntax errors. If validation fails, you will receive error details — fix the issues and call save_document again. Do not return the document as plain text — always use this tool.",
         parameters: {
           type: "object" as const,
           properties: {
@@ -105,9 +107,24 @@ export class CopilotProvider implements DocAgentProvider {
           },
           required: ["content"],
         },
-        handler: (args: { content?: string }) => {
+        handler: async (args: { content?: string }) => {
           debug(slug, "save_document called, content length:", args.content?.length ?? 0);
-          savedContent = args.content ?? null;
+          if (!args.content) {
+            savedContent = null;
+            return "Document saved successfully.";
+          }
+
+          saveAttempts++;
+          const validation = await validateDocumentForSave({
+            content: args.content,
+            attemptCount: saveAttempts,
+          });
+
+          if (!validation.accepted) {
+            return `VALIDATION FAILED — Mermaid diagram syntax errors found:\n\n${validation.errorMessage}\n\nPlease fix the Mermaid syntax and call save_document again.`;
+          }
+
+          savedContent = args.content;
           return "Document saved successfully.";
         },
       },
