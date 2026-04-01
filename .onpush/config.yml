@@ -8,10 +8,10 @@ output:
   toc: true
 generation:
   provider: anthropic
-  model: claude-sonnet-4-6
+  model: claude-opus-4-6
   cost_limit: null
   timeout: 3600
-  parallel: 2
+  parallel: 10
 types:
   product-overview:
     enabled: true
