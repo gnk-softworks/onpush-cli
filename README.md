@@ -1,6 +1,6 @@
 # OnPush
 
-[![Coverage Status](https://coveralls.io/repos/github/gnk-softworks/onpush-cli/badge.svg?branch=main)](https://coveralls.io/github/gnk-softworks/onpush-cli?branch=main)
+[![npm version](https://img.shields.io/npm/v/onpush)](https://www.npmjs.com/package/onpush) [![Coverage Status](https://coveralls.io/repos/github/gnk-softworks/onpush-cli/badge.svg?branch=main)](https://coveralls.io/github/gnk-softworks/onpush-cli?branch=main)
 
 Software documentation generator powered by either Claude Code or GitHub Copilot agents. OnPush autonomously explores your codebase, produces and maintains comprehensive Markdown docs.
 
@@ -86,6 +86,8 @@ Options:
 
 Interactive setup wizard. Creates `.onpush/config.yml`.
 
+- Select AI provider: **Anthropic** or **GitHub Copilot**
+- Select AI model (provider-specific presets or custom model name)
 - Select mode: **Current Repo** or **Remote Repo(s)**
 - Configure project name, output directory, document types
 - Create custom document types with guided prompts
@@ -215,7 +217,7 @@ output:
 
 generation:
   provider: "anthropic"  # or "copilot"
-  model: "claude-sonnet-4-6"
+  model: "claude-opus-4-6"
   cost_limit: null
   timeout: 3600
   parallel: 10
@@ -284,13 +286,17 @@ CI mode is auto-detected via `CI=true` or `--ci` flag. Output switches to JSON w
 | `ONPUSH_BYOK_API_KEY` | BYOK API key (Copilot only) |
 | `CI` | Auto-enables CI mode |
 
+## Community
+
+Join the [OnPush Discord server](https://discord.gg/7F9vad4j) to ask questions, share feedback, and connect with other users and contributors.
+
 ## Feature requests and bug reports
 
 If you have a feature request or have found a bug, please create an issue on the  [GitHub repository](https://github.com/gnk-softworks/onpush-cli/issues).
 
 ## Contributions
 
-We welcome any contributions from the community to improve the library.
+We welcome any contributions from the community to improve the library. Join our [Discord server](https://discord.gg/7F9vad4j) to discuss contributions or get help.
 
 ### How to Contribute
 

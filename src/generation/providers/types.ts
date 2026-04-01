@@ -21,6 +21,6 @@ export interface DocAgentProvider {
 }
 
 export const DEFAULT_MODELS: Record<ProviderName, string> = {
-  anthropic: "claude-sonnet-4-6",
-  copilot: "gpt-4.1",
+  anthropic: "claude-opus-4-6",
+  copilot: "claude-opus-4-6",
 };
