@@ -21,7 +21,7 @@ When running locally you can either utilise your Claude or Copilot Subscriptions
 ### Install via npm
 
 ```bash
-npm install -g onpush-cli
+npm install -g onpush
 ```
 
 ### Install from source
