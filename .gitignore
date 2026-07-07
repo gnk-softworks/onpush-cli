@@ -8,3 +8,6 @@ coverage/
 
 # OnPush - cached repository clones
 .onpush/cache/
+
+# Git worktrees
+.worktrees/
