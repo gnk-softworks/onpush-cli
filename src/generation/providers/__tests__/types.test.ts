@@ -9,7 +9,11 @@ describe("DEFAULT_MODELS", () => {
     expect(DEFAULT_MODELS.copilot).toBe("claude-opus-4-6");
   });
 
-  it("has exactly 2 entries", () => {
-    expect(Object.keys(DEFAULT_MODELS)).toHaveLength(2);
+  it("has opencode model set to openai/gpt-5.3-codex", () => {
+    expect(DEFAULT_MODELS.opencode).toBe("openai/gpt-5.3-codex");
+  });
+
+  it("has exactly 3 entries", () => {
+    expect(Object.keys(DEFAULT_MODELS)).toHaveLength(3);
   });
 });
